@@ -1,0 +1,783 @@
+================================================================================
+       FUAARK E-SHOPPING CHAT BOT — COMPLETE INTERACTION SCRIPT
+================================================================================
+Document: fuaarkScript.txt
+Application: FUAARK Shopping Assistant (Chatbot Prototype)
+Website Reference: https://fuaark.com/ (Athleisure & Gymwear)
+Format: Conversational Dialogue & Interaction Flows (User vs. Bot)
+================================================================================
+
+TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+1.  INITIAL BOOT & WELCOME FLOW
+2.  AUTHENTICATION & LOGIN FLOWS
+    2.1 Returning User Login (With Order History)
+    2.2 New User Registration & Welcome Offer (GET10)
+    2.3 Free-Text Phone Number Input
+    2.4 Phone Number Validation & Error Handling
+    2.5 OTP Resend Flow & OTP Validation
+3.  LOGIN GATING (GATEKEEPING PROTECTED ACTIONS)
+    3.1 Gated Add to Bag (Resume Action After Login)
+    3.2 Gated Order History / Tracking / Returns
+4.  PRODUCT EXPLORATION & CATALOG BROWSING FLOWS
+    4.1 Category & Subcategory Navigation (Men / Women / Accessories)
+    4.2 Product Card List Display & Actions
+    4.3 Product Detail View with Size Selection
+    4.4 Direct Add for Single-Size Accessories (Caps, Bags, Socks)
+5.  SHOPPING BAG & CART MANAGEMENT FLOWS
+    5.1 Empty Bag State
+    5.2 View Bag with Items & Automatic Discounts
+    5.3 Remove Individual Item from Bag
+    5.4 Clear Entire Bag
+6.  MULTI-STEP CHECKOUT & ORDER PLACEMENT FLOW
+    6.1 Name Input & Validation
+    6.2 Delivery Address Input & Length Validation
+    6.3 Pincode Input & 6-Digit Validation
+    6.4 Payment Mode Selection (UPI / COD / Cards)
+    6.5 Order Confirmation Card & Summary
+7.  MY ORDERS & ORDER TRACKING FLOWS
+    7.1 View Order History (Multiple Orders / Statuses)
+    7.2 Order Tracking Pipeline & Status Milestones
+    7.3 Track Order Without Previous Orders
+8.  RETURN & EXCHANGE FLOWS
+    8.1 Step 1: Order Selection
+    8.2 Step 2: Item Selection
+    8.3 Step 3: Reason Selection
+    8.4 Step 4: Return Ticket Confirmation
+9.  PRODUCT DESCRIPTION INQUIRY FLOW
+10. STATIC POLICIES & STORE INFORMATION
+    10.1 Return & Exchange Policy
+    10.2 Shipping & Delivery Policy
+    10.3 Active Offers & Coupons
+    10.4 Customer Support & Human Agent Escalation
+11. NATURAL LANGUAGE / FREE-TEXT INTENT ROUTING
+    11.1 Greetings & Chit-Chat (Hi / Hello / Hey)
+    11.2 Intent Keyword Matching (Track, Return, Offers, Shipping, Shop)
+    11.3 Fallback / Unrecognized Intent Handling
+12. UI CONTROLS & HEADER ACTIONS
+    12.1 Header Bag Icon Click
+    12.2 Header Restart Demo Button
+================================================================================
+
+
+================================================================================
+1. INITIAL BOOT & WELCOME FLOW
+================================================================================
+Context: Page loads or user clicks the restart button. The session is initialized
+in guest mode with no user logged in.
+
+[SYSTEM]: Displays Day Divider: "Today · Demo prototype · all data is dummy"
+[BOT]:    (Shows typing indicator...)
+[BOT]:    Welcome to FUAARK ⚡
+[BOT]:    (Shows typing indicator...)
+[BOT]:    Premium gymwear & sports clothing for men and women. I'm your shopping assistant — explore the collection right away, or login to track orders and shop.
+[BOT]:    (Renders Quick-Reply Options):
+          [ 🔐 Login with Mobile ] (Accent Highlight)
+          [ 🛍️ Explore Products ]
+          [ 📋 Return Policy ]
+          [ 🏷️ Offers ]
+[INPUT]:  Input composer is enabled with placeholder: "Type a message…"
+
+
+================================================================================
+2. AUTHENTICATION & LOGIN FLOWS
+================================================================================
+
+--------------------------------------------------------------------------------
+2.1 Returning User Login (With Order History)
+--------------------------------------------------------------------------------
+Context: User has registered previously (e.g. mobile: 9876543210 - Aarav Sharma).
+
+USER:     [Clicks "🔐 Login with Mobile"]
+BOT:      Please enter your registered mobile number.
+BOT:      (Renders Phone Input Form):
+          [ +91 | [ 10-digit mobile number ] ]  [ Send OTP ]
+
+USER:     (Types "9876543210" and clicks [ Send OTP ])
+USER:     +91 98765 43210
+BOT:      We have sent OTP to 9876543210. Please enter OTP.
+BOT:      (Renders 6-Digit OTP Widget):
+          [ _ ] [ _ ] [ _ ] [ _ ] [ _ ] [ _ ]
+          Didn't receive code? Resend OTP
+          [ Verify & Login ] (Disabled until 6 digits entered)
+
+USER:     (Enters demo OTP "246810" and clicks [ Verify & Login ])
+USER:     246810
+[BOT]:    (Simulates verification delay: 600ms)
+BOT:      Verified ✅ Welcome back, Aarav!
+BOT:      I can see you have 2 orders with us. What would you like to do?
+BOT:      (Renders Home Quick-Reply Options):
+          [ 📦 My Orders ]
+          [ 🚚 Track Order ]
+          [ 🔄 Return / Exchange ]
+          [ 🔍 Product Description ]
+          [ 📋 Return Policy ]
+          [ 🚛 Shipping Info ]
+          [ 🏷️ Offers ]
+          [ 🛍️ Shop Now ]
+
+--------------------------------------------------------------------------------
+2.2 New User Registration & Welcome Offer (GET10)
+--------------------------------------------------------------------------------
+Context: User enters a mobile number that does not exist in the database (e.g. 9988776655).
+
+USER:     [Clicks "🔐 Login with Mobile"]
+BOT:      Please enter your registered mobile number.
+BOT:      (Renders Phone Input Form with +91 prefix)
+
+USER:     (Enters "9988776655" and submits)
+USER:     +91 99887 76655
+BOT:      We have sent OTP to 9988776655. Please enter OTP.
+BOT:      (Renders 6-digit OTP Widget)
+
+USER:     (Enters "246810")
+USER:     246810
+[BOT]:    (Simulates verification delay)
+BOT:      Verified ✅ Welcome to FUAARK!
+BOT:      Looks like you're new here. As a welcome gift, use code GET10 for flat 10% off your first order 🎉
+
+          Let's find your fit — which collection would you like to explore?
+BOT:      (Renders Collections Menu):
+          [ 🏋️ Men ]
+          [ 🤸 Women ]
+          [ 🎒 Accessories ]
+
+--------------------------------------------------------------------------------
+2.3 Free-Text Phone Number Input
+--------------------------------------------------------------------------------
+Context: User types mobile number directly in the chat composer instead of using the form.
+
+USER:     "login"  (OR types "9812345678" directly)
+BOT:      Please enter your registered mobile number.
+USER:     "9812345678"
+BOT:      We have sent OTP to 9812345678. Please enter OTP.
+BOT:      (Renders 6-digit OTP widget)
+USER:     "246810" (typed directly into composer or filled in OTP boxes)
+BOT:      Verified ✅ Welcome back, Priya!
+BOT:      I can see you have 1 order with us. What would you like to do?
+BOT:      (Renders Home Quick-Reply Options)
+
+--------------------------------------------------------------------------------
+2.4 Phone Number Validation & Error Handling
+--------------------------------------------------------------------------------
+Scenario A: Form validation (User enters fewer than 10 digits or invalid starting digit)
+USER:     (Types "5551234" in phone form and clicks Send OTP)
+[UI]:     Input field shakes with red error border (.err), no request sent.
+
+Scenario B: Free-text mobile validation
+USER:     (Types "12345" in composer when prompted for mobile number)
+BOT:      Please enter a valid 10-digit mobile number.
+
+--------------------------------------------------------------------------------
+2.5 OTP Resend Flow & OTP Validation
+--------------------------------------------------------------------------------
+Scenario A: User clicks "Resend OTP"
+USER:     [Clicks "Resend OTP" inside OTP widget]
+USER:     Resend OTP
+BOT:      We have sent OTP to 9876543210. Please enter OTP.
+BOT:      (Renders fresh OTP Widget)
+
+Scenario B: User enters invalid OTP in free-text composer
+USER:     (Types "123" into chat input during OTP stage)
+BOT:      Please enter a valid 6-digit OTP.
+
+
+================================================================================
+3. LOGIN GATING (GATEKEEPING PROTECTED ACTIONS)
+================================================================================
+Context: User performs an action that requires authentication while not logged in.
+The assistant remembers the intended action, prompts for login, and resumes the
+exact task automatically upon verification.
+
+--------------------------------------------------------------------------------
+3.1 Gated "Add to Bag" (Resuming Size & Item Selection)
+--------------------------------------------------------------------------------
+USER:     [Browses Men -> T-shirts -> selects "Compression T-shirt Black"]
+USER:     [Selects Size "L" and clicks "Add to Bag"]
+USER:     Compression T-shirt Black — Size L
+BOT:      Almost there! Please login to add items to your bag.
+BOT:      Please enter your registered mobile number.
+BOT:      (Renders Phone Input Form)
+
+USER:     (Enters "9876543210" and clicks Send OTP)
+USER:     +91 98765 43210
+BOT:      We have sent OTP to 9876543210. Please enter OTP.
+BOT:      (Renders OTP Widget)
+
+USER:     (Enters "246810")
+USER:     246810
+BOT:      Verified ✅ Welcome back, Aarav!
+BOT:      I can see you have 2 orders with us. What would you like to do?
+[BOT RESUMES STORED ACTION]:
+BOT:      Added to your bag ✅ (Compression T-shirt Black, Size L)
+BOT:      (Renders Cart Navigation Chips):
+          [ 🛒 View Bag ] (Accent)
+          [ 🛍️ Continue Shopping ]
+
+--------------------------------------------------------------------------------
+3.2 Gated Order History / Tracking / Returns
+--------------------------------------------------------------------------------
+Case A: User clicks "My Orders" while logged out
+USER:     "my orders"
+BOT:      Login with your mobile number to see your orders.
+BOT:      (Opens Login Flow -> Upon login, automatically displays orders list)
+
+Case B: User clicks "Track Order" while logged out
+USER:     "track order"
+BOT:      Login with your mobile number to track your orders.
+BOT:      (Opens Login Flow -> Upon login, automatically displays tracking options)
+
+Case C: User clicks "Return / Exchange" while logged out
+USER:     "return item"
+BOT:      Login with your mobile number to request a return or exchange.
+BOT:      (Opens Login Flow -> Upon login, automatically displays return options)
+
+
+================================================================================
+4. PRODUCT EXPLORATION & CATALOG BROWSING FLOWS
+================================================================================
+
+--------------------------------------------------------------------------------
+4.1 Category & Subcategory Navigation
+--------------------------------------------------------------------------------
+USER:     [Clicks "🛍️ Explore Products"]
+BOT:      Which collection are you in the mood for?
+BOT:      (Renders Categories):
+          [ 🏋️ Men ]
+          [ 🤸 Women ]
+          [ 🎒 Accessories ]
+
+USER:     [Clicks "🏋️ Men"]
+USER:     🏋️ Men
+BOT:      Men — great choice. Pick a category:
+BOT:      (Renders Subcategories):
+          [ T-shirts ]
+          [ Stringers ]
+          [ Sweatshirts & Pullovers ]
+          [ Jackets & Hoodies ]
+          [ Joggers & Track Pants ]
+          [ Shorts ]
+          [ ← All collections ]
+
+--------------------------------------------------------------------------------
+4.2 Product Card List Display & Actions
+--------------------------------------------------------------------------------
+USER:     [Clicks "T-shirts"]
+USER:     T-shirts
+BOT:      Here's what's hot in T-shirts right now:
+BOT:      (Renders 4 Product Cards):
+          --------------------------------------------------
+          [Thumbnail]  Compression T-shirt Black
+                       Compression Fit · ★ 4.8
+                       ₹1,049  ₹1,749  40% off
+                       [ Details ]   [ Add to Bag ]
+          --------------------------------------------------
+          [Thumbnail]  Compression Fullsleeves T-shirt Black
+                       Compression Fit · ★ 4.7
+                       ₹1,099  ₹1,899  42% off
+                       [ Details ]   [ Add to Bag ]
+          --------------------------------------------------
+          [Thumbnail]  Polo T-shirt Black
+                       Slim Fit · ★ 4.6
+                       ₹949    ₹1,599  41% off
+                       [ Details ]   [ Add to Bag ]
+          --------------------------------------------------
+          [Thumbnail]  Performance T-shirt Black
+                       Slim Fit · ★ 4.7
+                       ₹799    ₹1,299  38% off
+                       [ Details ]   [ Add to Bag ]
+          --------------------------------------------------
+BOT:      (Renders Chips):
+          [ ← More categories ]
+          [ 🛒 Go to Bag (N) ] (If bag contains items)
+
+--------------------------------------------------------------------------------
+4.3 Product Detail View with Size Selection
+--------------------------------------------------------------------------------
+USER:     [Clicks "Details" on Compression T-shirt Black]
+USER:     Details: Compression T-shirt Black
+BOT:      (Renders Product Detail Card):
+          --------------------------------------------------
+          [Large Thumbnail]  Compression T-shirt Black
+                             Compression Fit · ★ 4.8 (2.1k reviews)
+                             ₹1,049  ₹1,749  40% off
+
+          Second-skin compression tee in breathable 4-way stretch knit.
+          Wicks sweat fast, supports muscle movement and stays shape-true
+          wash after wash.
+
+          Select size:
+          [ S ]  [ M ]  [ L ]  [ XL ]  [ XXL ]
+
+          [ Add to Bag ] (Disabled until size is selected)
+          --------------------------------------------------
+
+USER:     [Selects Size "M"]
+[UI]:     Size pill "M" highlights with .sel state. "Add to Bag" button is enabled.
+USER:     [Clicks "Add to Bag"]
+USER:     Compression T-shirt Black — Size M
+BOT:      Added to your bag ✅ (Compression T-shirt Black, Size M)
+[HEADER]: Bag count badge updates to "1"
+BOT:      (Renders Chips):
+          [ 🛒 View Bag ] (Accent)
+          [ 🛍️ Continue Shopping ]
+
+--------------------------------------------------------------------------------
+4.4 Direct Add for Single-Size Accessories
+--------------------------------------------------------------------------------
+Context: Accessories like caps, socks, or bags have only one size ("Free" or "30L").
+
+USER:     [Selects Accessories -> Caps -> Camo Trucker Cap Olive]
+USER:     [Clicks "Add to Bag" directly on the card]
+USER:     Add to Bag
+BOT:      Added Camo Trucker Cap Olive to your bag ✅
+BOT:      (Renders Chips):
+          [ 🛒 View Bag ]
+          [ 🛍️ Continue Shopping ]
+
+
+================================================================================
+5. SHOPPING BAG & CART MANAGEMENT FLOWS
+================================================================================
+
+--------------------------------------------------------------------------------
+5.1 Empty Bag State
+--------------------------------------------------------------------------------
+USER:     [Clicks "View Bag" when cart is empty]
+USER:     View bag
+BOT:      Your bag is empty. Let's fix that — want to browse?
+BOT:      Which collection are you in the mood for?
+BOT:      (Renders Collections Menu: Men / Women / Accessories)
+
+--------------------------------------------------------------------------------
+5.2 View Bag with Items & Automatic Discounts
+--------------------------------------------------------------------------------
+Context: Logged-in user has items in their cart.
+
+USER:     [Clicks "🛒 View Bag"]
+USER:     View bag
+BOT:      (Renders Bag Card):
+          ==================================================
+          YOUR BAG                                   2 items
+          --------------------------------------------------
+          Compression T-shirt Black (M) × 1           ₹1,049  [✕]
+          Camo Trucker Cap Olive (Free) × 1             ₹499  [✕]
+          --------------------------------------------------
+          Subtotal                                    ₹1,548
+          Welcome offer GET10 (-10%)                   - ₹155  (If first order)
+          Shipping                                      FREE  (Orders >= ₹999)
+          --------------------------------------------------
+          Total                                       ₹1,393
+          ==================================================
+BOT:      (Renders Cart Actions):
+          [ ✅ Checkout ] (Accent)
+          [ 🛍️ Continue Shopping ]
+          [ 🗑️ Clear Bag ]
+
+--------------------------------------------------------------------------------
+5.3 Remove Individual Item from Bag
+--------------------------------------------------------------------------------
+USER:     [Clicks [✕] button next to "Camo Trucker Cap Olive"]
+USER:     Remove item
+[UI]:     Card re-calculates subtotal, shipping & discounts instantly.
+BOT:      (Renders Updated Bag Card showing 1 item, Total: ₹944 + ₹79 shipping = ₹1,023)
+BOT:      (Renders Cart Actions: Checkout / Continue Shopping / Clear Bag)
+
+--------------------------------------------------------------------------------
+5.4 Clear Entire Bag
+--------------------------------------------------------------------------------
+USER:     [Clicks "🗑️ Clear Bag"]
+USER:     Clear bag
+[HEADER]: Bag count badge hides
+BOT:      Your bag is empty. Let's fix that — want to browse?
+BOT:      (Renders Collections Menu)
+
+
+================================================================================
+6. MULTI-STEP CHECKOUT & ORDER PLACEMENT FLOW
+================================================================================
+
+--------------------------------------------------------------------------------
+6.1 Full Checkout Flow
+--------------------------------------------------------------------------------
+USER:     [Clicks "✅ Checkout"]
+USER:     ✅ Checkout
+BOT:      Awesome — total payable is ₹1,393 (incl. taxes).
+
+          First, what's your full name?
+
+USER:     (Types "Aarav Sharma" in composer and presses Enter)
+USER:     Aarav Sharma
+BOT:      Nice to meet you, Aarav! 🙌
+
+          Where should we deliver? Please type your full address (house no, street, area, city, state).
+
+USER:     (Types "Flat 402, Lotus Heights, Indiranagar, Bengaluru, Karnataka")
+USER:     Flat 402, Lotus Heights, Indiranagar, Bengaluru, Karnataka
+BOT:      Got it. And the 6-digit delivery pincode?
+
+USER:     (Types "560038")
+USER:     560038
+BOT:      Perfect. How would you like to pay?
+BOT:      (Renders Payment Mode Chips):
+          [ UPI ]
+          [ Cash on Delivery ]
+          [ Credit / Debit Card ]
+
+USER:     [Clicks "UPI"]
+USER:     UPI
+[BOT]:    (Processes payment and saves order to database)
+BOT:      Payment via UPI confirmed ✅
+BOT:      (Renders Order Confirmation Card):
+          ==================================================
+          (Green Animated Checkmark Ring)
+          Order placed! 🎉
+          Order FUA-79482 · UPI
+          Arriving by 16 Oct 2026
+
+          Amount paid                                 ₹1,393
+          --------------------------------------------------
+          Compression T-shirt Black (M) × 1           ₹1,049
+          Camo Trucker Cap Olive (Free) × 1             ₹499
+          ==================================================
+BOT:      You'll get order updates on SMS & WhatsApp. Anything else I can help with?
+BOT:      (Renders Home Quick-Reply Options)
+
+--------------------------------------------------------------------------------
+6.2 Checkout Input Validations
+--------------------------------------------------------------------------------
+Scenario A: Address too short
+USER:     "Bengaluru"
+BOT:      That address looks a little short — please add your house/flat no., street, area and city.
+[STATE]:  Stays on address input step until a valid address (>=12 chars) is provided.
+
+Scenario B: Invalid Pincode
+USER:     "5600"  (OR "ABCD56")
+BOT:      Please enter a valid 6-digit pincode (e.g. 560001).
+[STATE]:  Stays on pincode input step until exactly 6 digits are provided.
+
+
+================================================================================
+7. MY ORDERS & ORDER TRACKING FLOWS
+================================================================================
+
+--------------------------------------------------------------------------------
+7.1 View Order History
+--------------------------------------------------------------------------------
+Context: Logged-in user Aarav Sharma has 2 past orders in USERS_DB.
+
+USER:     [Clicks "📦 My Orders"] (OR types "my orders")
+USER:     My orders
+BOT:      Here is your order product list 📦
+BOT:      (Renders Order Card 1):
+          --------------------------------------------------
+          FUA-78412                               [Delivered]
+          Compression T-shirt Black (M) × 1           ₹1,049
+          Classic Ankle Socks Black (Free) × 2          ₹598
+          --------------------------------------------------
+          Total                                       ₹1,647
+          Delivered on 2 Oct 2026
+          [ Return / Exchange ]
+          --------------------------------------------------
+
+BOT:      (Renders Order Card 2):
+          --------------------------------------------------
+          FUA-79120                              [In transit]
+          Core Backpack Bag Black 30L (30L) × 1       ₹1,499
+          --------------------------------------------------
+          Total                                       ₹1,499
+          [ Track ]   [ Return / Exchange ]
+          --------------------------------------------------
+BOT:      (Renders Home Quick-Reply Options)
+
+--------------------------------------------------------------------------------
+7.2 Order Tracking Pipeline
+--------------------------------------------------------------------------------
+USER:     [Clicks "Track" on Order FUA-79120]
+USER:     Track FUA-79120
+BOT:      Tracking FUA-79120:
+BOT:      (Renders Tracking Card with Step Indicator):
+          --------------------------------------------------
+          FUA-79120                              [In transit]
+          Core Backpack Bag Black 30L (30L) × 1       ₹1,499
+          Total                                       ₹1,499
+
+          [● Placed]  [● Packed]  [● Shipped]  [○ Out for delivery]  [○ Delivered]
+
+          Placed 6 Oct 2026 · Expected by 12 Oct 2026
+          [ Return / Exchange ]
+          --------------------------------------------------
+BOT:      (Renders Home Quick-Reply Options)
+
+--------------------------------------------------------------------------------
+7.3 Track Order Flow from Main Menu
+--------------------------------------------------------------------------------
+USER:     [Clicks "🚚 Track Order"]
+USER:     Track order
+BOT:      Which order would you like to track?
+BOT:      (Renders Orders Picker):
+          [ FUA-78412 · Delivered ]
+          [ FUA-79120 · In transit ]
+          [ ← Back ]
+
+USER:     [Clicks "FUA-79120 · In transit"]
+BOT:      Tracking FUA-79120:
+BOT:      (Displays Tracking Card with steps)
+
+
+================================================================================
+8. RETURN & EXCHANGE FLOWS
+================================================================================
+Context: FUAARK provides a 7-day return/exchange window from date of delivery.
+
+USER:     [Clicks "🔄 Return / Exchange"]
+USER:     Return / Exchange
+BOT:      Which order do you want to return or exchange?
+BOT:      (Renders Order Chips):
+          [ FUA-78412 · 28 Sep 2026 ]
+          [ FUA-79120 · 6 Oct 2026 ]
+          [ ← Back ]
+
+USER:     [Clicks "FUA-78412 · 28 Sep 2026"]
+USER:     FUA-78412 · 28 Sep 2026
+BOT:      Order FUA-78412 — which item?
+BOT:      (Renders Item Chips):
+          [ Compression T-shirt Black (M) ]
+          [ Classic Ankle Socks Black (Free) ]
+          [ ← Back ]
+
+USER:     [Clicks "Compression T-shirt Black (M)"]
+USER:     Compression T-shirt Black (M)
+BOT:      What's the reason?
+BOT:      (Renders Reason Chips):
+          [ Size too small ]
+          [ Size too large ]
+          [ Damaged / defective ]
+          [ Wrong item received ]
+          [ Changed my mind ]
+          [ Quality not as expected ]
+
+USER:     [Clicks "Size too small"]
+USER:     Size too small
+BOT:      Got it — Size too small.
+BOT:      (Renders Return Confirmation Info Block):
+          ==================================================
+          Return request raised ✅
+          • Ticket: RTN-5821
+          • Order: FUA-78412
+          • Item: Compression T-shirt Black (M)
+          • Reason: Size too small
+
+          A reverse pickup will be arranged within 24–48 hrs
+          (subject to pincode serviceability). Refund hits
+          the source account in 5–7 business days after
+          pickup & QC.
+          ==================================================
+BOT:      (Renders Home Quick-Reply Options)
+
+
+================================================================================
+9. PRODUCT DESCRIPTION INQUIRY FLOW
+================================================================================
+Context: User wants to know features, fabric, and fit of a specific product.
+
+USER:     [Clicks "🔍 Product Description"] (OR types "tell me about compression tee")
+USER:     Product description
+BOT:      Which product would you like to know more about?
+BOT:      (Renders Top Product Chips):
+          [ Compression T-shirt Black ]
+          [ Compression Fullsleeves T-shirt Black ]
+          [ Polo T-shirt Black ]
+          [ Performance T-shirt Black ]
+          [ Contour Oversized T-shirt Dark Grey ]
+          [ Ribbed Tank Black ]
+          [ DeadLift Stringer Beige ]
+          [ Thrive Pullover Black ]
+          [ ← Back ]
+
+USER:     [Clicks "Compression T-shirt Black"]
+USER:     Compression T-shirt Black
+BOT:      (Renders Product Info Block):
+          ==================================================
+          Compression T-shirt Black
+          • Compression Fit · ★ 4.8
+          • Price: ₹1,049  ₹1,749
+          • Sizes: S, M, L, XL, XXL
+
+          Second-skin compression tee in breathable 4-way
+          stretch knit. Wicks sweat fast, supports muscle
+          movement and stays shape-true wash after wash.
+          ==================================================
+BOT:      (Renders Next Action Chips):
+          [ 🛒 Add to Bag ] (Accent)
+          [ 🔍 Another product ]
+          [ ← Back ]
+
+
+================================================================================
+10. STATIC POLICIES & STORE INFORMATION
+================================================================================
+
+--------------------------------------------------------------------------------
+10.1 Return & Exchange Policy
+--------------------------------------------------------------------------------
+USER:     [Clicks "📋 Return Policy"] (OR types "return policy")
+USER:     Return policy
+BOT:      (Renders Info Block):
+          ==================================================
+          Return & Exchange Policy
+          • Return or exchange within 7 days of delivery —
+            requests after 7 days aren't accepted.
+          • One return / exchange per order.
+          • Wrong, missing, defective or damaged item? Report
+            within 24 hours of delivery.
+          • Reverse pickup is arranged once approved (subject
+            to pincode serviceability).
+          • No returns or exchanges on international orders.
+          • Defects must be reported within 7 days with images
+            or videos to care@fuaark.com.
+
+          Full policy: fuaark.com/policies/refund-policy
+          ==================================================
+BOT:      (Renders Home / Menu Quick-Reply Options)
+
+--------------------------------------------------------------------------------
+10.2 Shipping & Delivery Policy
+--------------------------------------------------------------------------------
+USER:     [Clicks "🚛 Shipping Info"] (OR types "shipping details")
+USER:     Shipping info
+BOT:      (Renders Info Block):
+          ==================================================
+          Shipping Information
+          • Orders are dispatched within 1–2 business days.
+          • Delivery takes 4–6 business days across India.
+          • Free shipping on prepaid orders above ₹999
+            (otherwise ₹79 flat).
+          • Cash on Delivery available on orders up to ₹5,000.
+
+          Full policy: fuaark.com/policies/shipping-policy
+          ==================================================
+BOT:      (Renders Home / Menu Quick-Reply Options)
+
+--------------------------------------------------------------------------------
+10.3 Active Offers & Coupons
+--------------------------------------------------------------------------------
+USER:     [Clicks "🏷️ Offers"] (OR types "offers / discounts")
+USER:     Offers
+BOT:      (Renders Info Block):
+          ==================================================
+          Current Offers
+          • GET10 — flat 10% off your first purchase.
+          • Final Sale — up to 50% off on selected styles.
+          • Free shipping on prepaid orders above ₹999.
+
+          Apply the code at checkout on fuaark.com
+          ==================================================
+BOT:      (Renders Home / Menu Quick-Reply Options)
+
+--------------------------------------------------------------------------------
+10.4 Customer Support & Human Agent Escalation
+--------------------------------------------------------------------------------
+USER:     "talk to a human" (OR "agent support", "customer care")
+BOT:      (Renders Info Block):
+          ==================================================
+          Talk to a human
+          • Email: care@fuaark.com (replies within 24 hours).
+          • Hours: Mon–Sat, 10am–6pm IST.
+          • For order issues, keep your Order ID handy.
+
+          This is a demo bot — no real agents are connected.
+          ==================================================
+BOT:      (Renders Home / Menu Quick-Reply Options)
+
+
+================================================================================
+11. NATURAL LANGUAGE / FREE-TEXT INTENT ROUTING
+================================================================================
+
+--------------------------------------------------------------------------------
+11.1 Greetings & Chit-Chat
+--------------------------------------------------------------------------------
+Case A: Unauthenticated user says "hi" / "hello" / "hey"
+USER:     "hi"
+BOT:      Hey! 👋 How can I help today?
+BOT:      (Renders Boot Chips: Login with Mobile / Explore / Return Policy / Offers)
+
+Case B: Authenticated user (Aarav Sharma) says "hey"
+USER:     "hey"
+BOT:      Hey Aarav! 👋 How can I help today?
+BOT:      (Renders Home Chips with user menu)
+
+--------------------------------------------------------------------------------
+11.2 Natural Language Intent Triggers (Regex Grounded)
+--------------------------------------------------------------------------------
+- "where is my order" / "track my package" / "order status"
+  -> Routes to trackFlow()
+
+- "my orders" / "order history" / "past purchases"
+  -> Routes to showOrders()
+
+- "I want to return an item" / "exchange size" / "refund"
+  -> If logged in with orders: routes to returnFlow()
+  -> If no orders / not logged in: routes to Return Policy info block
+
+- "what are your delivery charges?" / "when will it be delivered?"
+  -> Routes to Shipping Information info block
+
+- "any discount coupon?" / "promo codes" / "sale"
+  -> Routes to Current Offers info block
+
+- "show me gym clothes" / "browse collections" / "buy trackpants"
+  -> Routes to shopFlow()
+
+- "tell me about polo t-shirt" / "product description"
+  -> Routes to productDescriptionFlow()
+
+- "view cart" / "checkout now" / "show my bag"
+  -> Routes to cartFlow()
+
+--------------------------------------------------------------------------------
+11.3 Fallback / Unrecognized Intent Handling
+--------------------------------------------------------------------------------
+Context: User types an unrecognized phrase (e.g. "what is the weather today?").
+
+USER:     "what is the weather today?"
+BOT:      I'm a demo assistant, so I only understand a few things right now 🙂 Try one of these:
+BOT:      (Renders Suggested Intent Chips):
+          [ My orders ]
+          [ Return policy ]
+          [ Track order ]
+          [ Offers ]
+          [ Shop now ]
+          [ Talk to human ]
+
+USER:     [Clicks any suggested chip to get back on track]
+
+
+================================================================================
+12. UI CONTROLS & HEADER ACTIONS
+================================================================================
+
+--------------------------------------------------------------------------------
+12.1 Header Bag Button (Top Right Bag Icon)
+--------------------------------------------------------------------------------
+Case A: User clicks Bag button while logged out
+USER:     [Clicks Bag Icon in Header]
+BOT:      Please login — then I can save your bag and place your order.
+BOT:      (Triggers mobile login prompt)
+
+Case B: User clicks Bag button while logged in
+USER:     [Clicks Bag Icon in Header]
+USER:     View bag
+BOT:      (Renders cart card if items exist, or empty bag message)
+
+--------------------------------------------------------------------------------
+12.2 Header Restart Demo Button (Top Right Circular Arrow Icon)
+--------------------------------------------------------------------------------
+USER:     [Clicks Restart Button]
+[SYSTEM]: Reloads the page (location.reload()), clearing ephemeral state and restarting
+          the chat from Section 1 (Fresh Boot Flow).
+
+================================================================================
+                           END OF INTERACTION SCRIPT
+================================================================================
