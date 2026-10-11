@@ -5,8 +5,9 @@ A mobile-sized, conversational shopping assistant prototype for [FUAARK](https:/
 ---
 
 ## 🔗 Live Links
-- 🚀 **Live Chatbot**: [https://sv96.github.io/Chat-Bot/ecommerce-chatbot-12/](https://sv96.github.io/Chat-Bot/ecommerce-chatbot-12/)
-- 📱 **WhatsApp Flow Preview Gallery**: [https://sv96.github.io/Chat-Bot/ecommerce-chatbot-12/whatsapp-preview/](https://sv96.github.io/Chat-Bot/ecommerce-chatbot-12/whatsapp-preview/)
+- 🚀 **Live Chatbot Application**: [https://sv96.github.io/Chat-Bot/ecommerce-chatbot-12/](https://sv96.github.io/Chat-Bot/ecommerce-chatbot-12/)
+- 📱 **WhatsApp Screenshots Interactive Gallery**: [https://sv96.github.io/Chat-Bot/ecommerce-chatbot-12/whatsapp-preview/](https://sv96.github.io/Chat-Bot/ecommerce-chatbot-12/whatsapp-preview/)
+- 📱 **WhatsApp Prototype Viewer**: [https://sv96.github.io/Chat-Bot/ChatbotPrototype/Whastapp/](https://sv96.github.io/Chat-Bot/ChatbotPrototype/Whastapp/)
 - 🎬 **Video Preview Player**: [https://sv96.github.io/Chat-Bot/ChatbotPrototype/Website/](https://sv96.github.io/Chat-Bot/ChatbotPrototype/Website/)
 - 📥 **Direct Video Download (MP4)**: [https://sv96.github.io/Chat-Bot/ChatbotPrototype/Website/fuaark-demo.mp4](https://sv96.github.io/Chat-Bot/ChatbotPrototype/Website/fuaark-demo.mp4)
 - 🏠 **Root Redirect**: [https://sv96.github.io/Chat-Bot/](https://sv96.github.io/Chat-Bot/)
@@ -24,10 +25,10 @@ Chat-Bot/
 │   ├── Website/
 │   │   ├── index.html          # Interactive video preview player
 │   │   ├── fuaark-demo.mp4     # Faststart screen recording walkthrough (MP4)
-│   │   ├── fuaark-2026-10-11_13.59.53 # Original screen recording
-│   │   └── Screenshots/        # UI captures
+│   │   └── WebsiteDemo*.png    # UI captures
 │   └── Whastapp/
-│       └── *.png               # WhatsApp Business conversational flow mockups
+│       ├── index.html          # WhatsApp screenshots interactive viewer
+│       └── whatsapp_*.png      # WhatsApp Business conversational flow mockups
 ├── ecommerce-chatbot-12/       # Main chatbot web application
 │   ├── index.html              # Chatbot web interface
 │   ├── css/
@@ -37,9 +38,8 @@ Chat-Bot/
 │   │   └── data.js             # Catalog, dummy users, orders, policies
 │   ├── logo.png                # Circular FUAARK bot logo
 │   ├── fuaarkScript.txt        # Full user-bot conversation script
-│   └── whatsapp-preview/       # Interactive WhatsApp preview gallery web app
-│       ├── index.html
-│       └── images/
+│   ├── whatsapp-preview/       # Interactive WhatsApp preview gallery web app
+│   └── whatsapp-ss/            # Quick alias redirect
 ├── index.html                  # Root entry redirect to ecommerce-chatbot-12/
 └── README.md
 ```
@@ -50,5 +50,5 @@ Chat-Bot/
 - **Catalog Exploration**: Men's, women's, and accessories collections with ratings, filters, and size selection.
 - **Cart & Checkout**: Conversational address capture, pincode validation, multiple payment methods (UPI, COD, Card).
 - **Order Tracking & Returns**: Real-time status pipeline and 7-day return request flow with ticket generation.
-- **Interactive WhatsApp Preview**: Device simulator and gallery showcasing WhatsApp Business conversational flows.
+- **WhatsApp Screenshots & Simulator**: Device simulator and gallery showcasing WhatsApp Business conversational flows.
 - **Video Walkthrough**: Complete screen-recorded walkthrough previewable directly in browser.
