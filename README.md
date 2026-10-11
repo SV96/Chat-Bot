@@ -4,8 +4,9 @@ A mobile-sized, conversational shopping assistant prototype for [FUAARK](https:/
 
 ---
 
-## 🔗 Quick Links
+## 🔗 Live Links
 - 🚀 **Live Chatbot**: [https://sv96.github.io/Chat-Bot/ecommerce-chatbot-12/](https://sv96.github.io/Chat-Bot/ecommerce-chatbot-12/)
+- 📱 **WhatsApp Flow Preview Gallery**: [https://sv96.github.io/Chat-Bot/ecommerce-chatbot-12/whatsapp-preview/](https://sv96.github.io/Chat-Bot/ecommerce-chatbot-12/whatsapp-preview/)
 - 🎬 **Video Preview Player**: [https://sv96.github.io/Chat-Bot/ChatbotPrototype/Website/](https://sv96.github.io/Chat-Bot/ChatbotPrototype/Website/)
 - 📥 **Direct Video Download (MP4)**: [https://sv96.github.io/Chat-Bot/ChatbotPrototype/Website/fuaark-demo.mp4](https://sv96.github.io/Chat-Bot/ChatbotPrototype/Website/fuaark-demo.mp4)
 - 🏠 **Root Redirect**: [https://sv96.github.io/Chat-Bot/](https://sv96.github.io/Chat-Bot/)
@@ -35,7 +36,10 @@ Chat-Bot/
 │   │   ├── app.js              # Chat engine (auth, cart, flows, routing)
 │   │   └── data.js             # Catalog, dummy users, orders, policies
 │   ├── logo.png                # Circular FUAARK bot logo
-│   └── fuaarkScript.txt        # Full user-bot conversation script
+│   ├── fuaarkScript.txt        # Full user-bot conversation script
+│   └── whatsapp-preview/       # Interactive WhatsApp preview gallery web app
+│       ├── index.html
+│       └── images/
 ├── index.html                  # Root entry redirect to ecommerce-chatbot-12/
 └── README.md
 ```
@@ -46,5 +50,5 @@ Chat-Bot/
 - **Catalog Exploration**: Men's, women's, and accessories collections with ratings, filters, and size selection.
 - **Cart & Checkout**: Conversational address capture, pincode validation, multiple payment methods (UPI, COD, Card).
 - **Order Tracking & Returns**: Real-time status pipeline and 7-day return request flow with ticket generation.
-- **WhatsApp Business Mockups**: Generated conversational screenshots matching WhatsApp Business interface.
+- **Interactive WhatsApp Preview**: Device simulator and gallery showcasing WhatsApp Business conversational flows.
 - **Video Walkthrough**: Complete screen-recorded walkthrough previewable directly in browser.

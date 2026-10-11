@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FUAARK — WhatsApp Chatbot Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --wa-dark-green: #075e54;
+      --wa-green: #008069;
+      --wa-light-green: #25d366;
+      --wa-teal: #128c7e;
+      --wa-bg: #111b21;
+      --wa-card-bg: #1e293b;
+      --surface: #0f172a;
+      --surface-light: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #ef590c;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+      background: var(--surface);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navigation Header */
+    header.site-header {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand img.logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .brand-title {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title strong {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 15px;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .wa-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #064e3b;
+      color: #34d399;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 12px;
+      border: 1px solid rgba(52, 211, 153, 0.3);
+    }
+
+    .brand-title small {
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .header-links {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 8px 14px;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: #d94b06;
+    }
+
+    .btn-wa {
+      background: var(--wa-green);
+      color: #fff;
+    }
+    .btn-wa:hover {
+      background: #009378;
+    }
+
+    .btn-outline {
+      background: #1e293b;
+      color: #cbd5e1;
+      border-color: var(--border);
+    }
+    .btn-outline:hover {
+      background: #334155;
+      color: #fff;
+    }
+
+    /* Main Container */
+    main.container {
+      flex: 1;
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 28px 20px 48px;
+      width: 100%;
+    }
+
+    /* View Switcher & Title Section */
+    .top-controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+    }
+
+    .page-heading h1 {
+      font-size: 22px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .page-heading p {
+      color: var(--text-muted);
+      font-size: 13.5px;
+      margin-top: 4px;
+    }
+
+    .view-tabs {
+      display: flex;
+      background: #090e1a;
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      gap: 4px;
+    }
+
+    .view-tab {
+      padding: 7px 14px;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 600;
+      background: transparent;
+      color: var(--text-muted);
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .view-tab.active {
+      background: var(--wa-green);
+      color: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+
+    /* Phone Simulator Layout */
+    .simulator-layout {
+      display: grid;
+      grid-template-columns: 460px 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    @media (max-width: 980px) {
+      .simulator-layout {
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+    }
+
+    /* Smartphone Device Frame */
+    .phone-mockup-wrapper {
+      position: sticky;
+      top: 90px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .phone-device {
+      width: 412px;
+      border-radius: 46px;
+      background: #020617;
+      padding: 12px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8),
+                  0 0 0 1px rgba(255, 255, 255, 0.15),
+                  0 0 0 4px #1e293b;
+      position: relative;
+    }
+
+    .phone-screen {
+      width: 100%;
+      border-radius: 36px;
+      overflow: hidden;
+      background: #efeae2;
+      position: relative;
+      box-shadow: inset 0 0 4px rgba(0,0,0,0.2);
+    }
+
+    .phone-screen img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: opacity 0.25s ease;
+    }
+
+    /* Phone Navigation Controls below mockup */
+    .mockup-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 18px;
+      width: 100%;
+    }
+
+    .nav-arrow-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav-arrow-btn:hover {
+      background: var(--wa-green);
+      border-color: var(--wa-green);
+    }
+
+    .step-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .step-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #334155;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .step-dot.active {
+      background: var(--wa-light-green);
+      transform: scale(1.3);
+      box-shadow: 0 0 8px rgba(37, 211, 102, 0.6);
+    }
+
+    /* Details & Flow Card Sidebar */
+    .flow-details-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .flow-picker-card {
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .flow-picker-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 12px;
+    }
+
+    .flow-buttons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 10px;
+    }
+
+    .flow-select-btn {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      text-align: left;
+      color: #e2e8f0;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .flow-select-btn:hover {
+      background: #1e293b;
+      border-color: var(--wa-green);
+    }
+
+    .flow-select-btn.active {
+      background: rgba(0, 128, 105, 0.15);
+      border-color: var(--wa-light-green);
+      color: #fff;
+      box-shadow: 0 0 0 1px var(--wa-light-green);
+    }
+
+    .flow-select-btn .f-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--wa-light-green);
+    }
+
+    .flow-select-btn .f-title {
+      font-size: 13.5px;
+      font-weight: 700;
+    }
+
+    .flow-info-card {
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .flow-badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--wa-light-green);
+      background: rgba(37, 211, 102, 0.1);
+      border: 1px solid rgba(37, 211, 102, 0.3);
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+    }
+
+    .flow-header h2 {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .flow-header p {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .features-list {
+      margin: 18px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13.5px;
+      background: #0f172a;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .feature-item .icon {
+      color: var(--wa-light-green);
+      font-size: 16px;
+    }
+
+    .dialogue-box {
+      background: #090e1a;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 18px;
+    }
+
+    .dialogue-box-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 10px;
+    }
+
+    .dialogue-snippet {
+      font-family: monospace;
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: #93c5fd;
+      white-space: pre-wrap;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    /* Grid View Layout */
+    .grid-layout {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 28px;
+    }
+
+    .grid-item {
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .grid-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
+      border-color: var(--wa-green);
+    }
+
+    .grid-img-wrap {
+      background: #020617;
+      padding: 14px;
+      display: flex;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .grid-img-wrap img {
+      max-width: 100%;
+      height: 480px;
+      object-fit: contain;
+      border-radius: 14px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .grid-info {
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .grid-info h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .grid-info p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .grid-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* Lightbox Modal */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.92);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      backdrop-filter: blur(8px);
+    }
+
+    .lightbox.active {
+      display: flex;
+    }
+
+    .lightbox img {
+      max-height: 92vh;
+      max-width: 92vw;
+      border-radius: 20px;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      background: #1e293b;
+      color: #fff;
+      border: 1px solid var(--border);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header class="site-header">
+    <div class="brand">
+      <img src="../logo.png" alt="FUAARK" class="logo" />
+      <div class="brand-title">
+        <strong>FUAARK <span class="wa-badge">✓ Official WhatsApp</span></strong>
+        <small>Interactive Chatbot Experience Prototype</small>
+      </div>
+    </div>
+    <div class="header-links">
+      <a href="../" class="btn btn-primary">🚀 Live Web Chatbot</a>
+      <a href="../../ChatbotPrototype/Website/" class="btn btn-outline">🎬 Demo Video</a>
+      <a href="https://github.com/SV96/Chat-Bot" class="btn btn-outline">📦 GitHub</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="top-controls">
+      <div class="page-heading">
+        <h1>📱 WhatsApp Conversational UI Preview</h1>
+        <p>Interactive mockup showcase of the FUAARK shopping assistant conversational flows grounded in fuaarkScript.txt</p>
+      </div>
+      <div class="view-tabs">
+        <button class="view-tab active" id="tab-simulator" onclick="switchView('simulator')">
+          📱 Device Simulator
+        </button>
+        <button class="view-tab" id="tab-grid" onclick="switchView('grid')">
+          🖼️ All Flows Grid
+        </button>
+      </div>
+    </div>
+
+    <!-- Simulator View -->
+    <div class="simulator-layout" id="view-simulator">
+      <!-- Phone Mockup Device -->
+      <div class="phone-mockup-wrapper">
+        <div class="phone-device">
+          <div class="phone-screen">
+            <img id="mockup-img" src="images/whatsapp_1_welcome.png" alt="WhatsApp Flow Preview" onclick="openLightbox()" title="Click to zoom" style="cursor: zoom-in;" />
+          </div>
+        </div>
+
+        <!-- Arrows & Indicators -->
+        <div class="mockup-controls">
+          <button class="nav-arrow-btn" onclick="prevFlow()" title="Previous (Left Arrow)">←</button>
+          <div class="step-dots" id="step-dots"></div>
+          <button class="nav-arrow-btn" onclick="nextFlow()" title="Next (Right Arrow)">→</button>
+        </div>
+      </div>
+
+      <!-- Flow Details & Scenario Selector -->
+      <div class="flow-details-panel">
+        <!-- Flow Selector Grid -->
+        <div class="flow-picker-card">
+          <div class="flow-picker-title">Select Conversational Scenario</div>
+          <div class="flow-buttons-grid" id="flow-buttons-grid"></div>
+        </div>
+
+        <!-- Current Flow Details -->
+        <div class="flow-info-card">
+          <span class="flow-badge" id="flow-badge">Scenario 1 of 6</span>
+          <div class="flow-header">
+            <h2 id="flow-title">Welcome & Onboarding Flow</h2>
+            <p id="flow-desc">Initial greeting triggered when a customer starts a new WhatsApp session with FUAARK assistant.</p>
+          </div>
+
+          <div class="features-list" id="flow-features"></div>
+
+          <div class="dialogue-box">
+            <div class="dialogue-box-title">Transcript Excerpt (from fuaarkScript.txt)</div>
+            <div class="dialogue-snippet" id="flow-dialogue"></div>
+          </div>
+
+          <div class="action-row">
+            <button class="btn btn-wa" onclick="openLightbox()">🔍 Fullscreen Zoom</button>
+            <a id="btn-download" href="images/whatsapp_1_welcome.png" download class="btn btn-outline">⬇️ Download High-Res</a>
+            <a href="../" class="btn btn-primary">🚀 Test in Live Chatbot</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- All Flows Grid View (Hidden by default) -->
+    <div class="grid-layout" id="view-grid" style="display: none;"></div>
+  </main>
+
+  <!-- Lightbox Modal -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+    <button class="lightbox-close" onclick="closeLightbox(event)">✕</button>
+    <img id="lightbox-img" src="images/whatsapp_1_welcome.png" alt="Full Preview" />
+  </div>
+
+  <script>
+    const FLOWS = [
+      {
+        id: "whatsapp_1_welcome",
+        num: "01",
+        title: "Welcome & Onboarding Flow",
+        badge: "Initial Greeting · Unauthenticated",
+        img: "images/whatsapp_1_welcome.png",
+        desc: "Initial interaction when a user opens the official FUAARK WhatsApp channel. Features verified badge, end-to-end encryption notification, and interactive quick-reply action chips.",
+        features: [
+          { icon: "⚡", text: "Instant automated welcome with brand emoji and store pitch" },
+          { icon: "🔘", text: "WhatsApp interactive reply buttons (Login, Catalog, Return Policy, Offers)" },
+          { icon: "🔒", text: "Official verified business checkmark badge (#008069)" }
+        ],
+        dialogue: `[BOT]: Welcome to FUAARK ⚡\n[BOT]: Premium gymwear & sports clothing for men and women. I'm your shopping assistant — explore the collection right away, or login to track orders and shop.\n[BUTTONS]: [ 🔐 Login with Mobile ] | [ 🛍️ Explore Products ] | [ 📋 Return Policy ] | [ 🏷️ Current Offers ]`
+      },
+      {
+        id: "whatsapp_2_login_otp",
+        num: "02",
+        title: "Mobile Login & OTP Verification",
+        badge: "Auth & Identity Gate",
+        img: "images/whatsapp_2_login_otp.png",
+        desc: "Secure mobile verification using 6-digit OTP (demo OTP 246810). Seamlessly recognizes returning customers (Aarav Sharma), loads past order count, and displays personalized menu options.",
+        features: [
+          { icon: "📱", text: "10-digit mobile number capture with country code formatting" },
+          { icon: "🔑", text: "Instant 6-digit OTP verification with 'Resend OTP' support" },
+          { icon: "👤", text: "Personalized welcome greeting displaying existing order count (2 orders)" }
+        ],
+        dialogue: `[USER]: 🔐 Login with Mobile\n[BOT]: Please enter your registered 10-digit mobile number:\n[USER]: +91 98765 43210\n[BOT]: We have sent a 6-digit OTP to +91 98765 43210. Please enter the OTP.\n[USER]: 246810\n[BOT]: Verified ✅ Welcome back, Aarav! I can see you have 2 orders with us.`
+      },
+      {
+        id: "whatsapp_3_browse_catalog",
+        num: "03",
+        title: "Catalog Exploration & Size Selection",
+        badge: "Interactive E-Commerce Flow",
+        img: "images/whatsapp_3_browse_catalog.png",
+        desc: "Multi-level catalog exploration by category (Men / Women / Accessories) and subcategories. Features rich WhatsApp product cards with MRP discounts and one-tap size picker buttons.",
+        features: [
+          { icon: "🏋️", text: "Category pills (Men, Women, Accessories) and subcategory navigation" },
+          { icon: "🏷️", text: "WhatsApp Product card with image, 4.8★ rating, and 40% discount badge" },
+          { icon: "👕", text: "Direct size selection (Size M / Size L) and cart confirmation badge" }
+        ],
+        dialogue: `[USER]: 🛍️ Explore Products\n[BOT]: Which collection are you in the mood for? [ Men | Women | Accessories ]\n[USER]: 🏋️ Men → T-shirts\n[BOT]: Here's what's trending in Men's T-shirts: Compression T-shirt Black (₹1,049 <s>₹1,749</s> 40% OFF)\n[USER]: Size M — Select & Add\n[BOT]: Added Compression T-shirt Black (M) to your bag! 🛒`
+      },
+      {
+        id: "whatsapp_4_cart_checkout",
+        num: "04",
+        title: "Bag Summary & Instant Checkout",
+        badge: "Conversational Checkout",
+        img: "images/whatsapp_4_cart_checkout.png",
+        desc: "Interactive cart summary card featuring automatic first-order discounts (GET10), free delivery calculation, address capture, payment mode selection, and instant order placement.",
+        features: [
+          { icon: "🛒", text: "Itemized WhatsApp Bag summary card with subtotal and GET10 discount" },
+          { icon: "📍", text: "Conversational address and pincode capture with validation" },
+          { icon: "⚡", text: "Multi-payment selector (Instant UPI / Cash on Delivery / Cards)" },
+          { icon: "🎉", text: "Confirmed Order card with Order #FUA-79482 and ETA timeline" }
+        ],
+        dialogue: `[USER]: 🛒 View Bag\n[BOT]: YOUR FUAARK BAG (2 Items) — Total Payable: ₹1,393 (GET10 applied, FREE delivery)\n[USER]: Proceed to Checkout\n[BOT]: Where should we deliver? Please enter full address:\n[USER]: Flat 402, Lotus Heights, Indiranagar, Bengaluru - 560038\n[BOT]: Payment confirmed ✅ Order Placed! 🎉 Order #FUA-79482`
+      },
+      {
+        id: "whatsapp_5_order_tracking",
+        num: "05",
+        title: "Live Order Tracking Pipeline",
+        badge: "Post-Purchase Experience",
+        img: "images/whatsapp_5_order_tracking.png",
+        desc: "Visual milestone tracking pipeline showing delivery progress from order placement to doorstep arrival, complete with courier details and AWB tracking code.",
+        features: [
+          { icon: "🚚", text: "Visual 5-step milestone pipeline (Placed → Packed → Shipped → Out → Delivered)" },
+          { icon: "📦", text: "Courier partner integration (BlueDart Express, AWB BD-84920412)" },
+          { icon: "📅", text: "Expected delivery arrival date calculation (12 Oct 2026)" }
+        ],
+        dialogue: `[USER]: 🚚 Track Order FUA-79120\n[BOT]: Tracking status for Order #FUA-79120: Core Backpack Bag 30L [In Transit 🚚]\n[TRACKER]: ● Placed  ● Packed  ● Shipped  ○ Out  ○ Delivered\n[BOT]: Courier: BlueDart Express (AWB: BD-84920412) · Expected by 12 Oct 2026`
+      },
+      {
+        id: "whatsapp_6_return_exchange",
+        num: "06",
+        title: "7-Day Return / Exchange Flow",
+        badge: "Reverse Logistics & Self-Service",
+        img: "images/whatsapp_6_return_exchange.png",
+        desc: "Frictionless self-service return request within the 7-day delivery window. Allows order selection, item picking, return reason categorization, and instant ticket generation.",
+        features: [
+          { icon: "📦", text: "Delivered order selection (FUA-78412 delivered 2 Oct)" },
+          { icon: "📋", text: "Multi-choice return reasons (Size too small, Damaged, Quality, etc.)" },
+          { icon: "🎫", text: "Approved return ticket #RTN-5821 with reverse pickup SLA (24–48 hrs)" }
+        ],
+        dialogue: `[USER]: 🔄 Return / Exchange\n[BOT]: Which order would you like to return or exchange? [ FUA-78412 | FUA-79120 ]\n[USER]: FUA-78412 · Compression T-shirt Black (M)\n[BOT]: What is the reason for return? [ Size too small | Size too large | Damaged ]\n[USER]: Size too small\n[BOT]: Return Request Raised Successfully ✅ Ticket #RTN-5821 Approved`
+      }
+    ];
+
+    let currentIndex = 0;
+
+    function renderSimulator() {
+      const f = FLOWS[currentIndex];
+      const img = document.getElementById("mockup-img");
+      img.style.opacity = 0;
+      setTimeout(() => {
+        img.src = f.img;
+        img.style.opacity = 1;
+      }, 150);
+
+      document.getElementById("flow-badge").textContent = `Scenario ${currentIndex + 1} of ${FLOWS.length} · ${f.badge}`;
+      document.getElementById("flow-title").textContent = f.title;
+      document.getElementById("flow-desc").textContent = f.desc;
+      document.getElementById("flow-dialogue").textContent = f.dialogue;
+      document.getElementById("btn-download").href = f.img;
+
+      // Features
+      const featEl = document.getElementById("flow-features");
+      featEl.innerHTML = f.features.map(feat => `
+        <div class="feature-item">
+          <span class="icon">${feat.icon}</span>
+          <span>${feat.text}</span>
+        </div>
+      `).join("");
+
+      // Step dots
+      const dotsEl = document.getElementById("step-dots");
+      dotsEl.innerHTML = FLOWS.map((_, i) => `
+        <div class="step-dot ${i === currentIndex ? 'active' : ''}" onclick="selectFlow(${i})"></div>
+      `).join("");
+
+      // Buttons grid
+      const gridBtns = document.getElementById("flow-buttons-grid");
+      gridBtns.innerHTML = FLOWS.map((flow, i) => `
+        <button class="flow-select-btn ${i === currentIndex ? 'active' : ''}" onclick="selectFlow(${i})">
+          <span class="f-num">SCENARIO ${flow.num}</span>
+          <span class="f-title">${flow.title}</span>
+        </button>
+      `).join("");
+    }
+
+    function renderGrid() {
+      const grid = document.getElementById("view-grid");
+      grid.innerHTML = FLOWS.map((f, i) => `
+        <div class="grid-item">
+          <div class="grid-img-wrap" onclick="openLightbox(${i})">
+            <img src="${f.img}" alt="${f.title}" />
+          </div>
+          <div class="grid-info">
+            <div>
+              <h3>${f.num}. ${f.title}</h3>
+              <p>${f.desc}</p>
+            </div>
+            <div class="grid-actions">
+              <button class="btn btn-wa" onclick="selectFlow(${i}); switchView('simulator');">📱 View in Simulator</button>
+              <button class="btn btn-outline" onclick="openLightbox(${i})">🔍 Zoom</button>
+            </div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function selectFlow(index) {
+      currentIndex = index;
+      renderSimulator();
+    }
+
+    function prevFlow() {
+      currentIndex = (currentIndex - 1 + FLOWS.length) % FLOWS.length;
+      renderSimulator();
+    }
+
+    function nextFlow() {
+      currentIndex = (currentIndex + 1) % FLOWS.length;
+      renderSimulator();
+    }
+
+    function switchView(mode) {
+      const sim = document.getElementById("view-simulator");
+      const grid = document.getElementById("view-grid");
+      const tabSim = document.getElementById("tab-simulator");
+      const tabGrid = document.getElementById("tab-grid");
+
+      if (mode === "simulator") {
+        sim.style.display = "grid";
+        grid.style.display = "none";
+        tabSim.classList.add("active");
+        tabGrid.classList.remove("active");
+      } else {
+        sim.style.display = "none";
+        grid.style.display = "grid";
+        tabGrid.classList.add("active");
+        tabSim.classList.remove("active");
+        renderGrid();
+      }
+    }
+
+    function openLightbox(index) {
+      const idx = (typeof index === "number") ? index : currentIndex;
+      document.getElementById("lightbox-img").src = FLOWS[idx].img;
+      document.getElementById("lightbox").classList.add("active");
+    }
+
+    function closeLightbox(e) {
+      if (e.target.id === "lightbox" || e.target.classList.contains("lightbox-close")) {
+        document.getElementById("lightbox").classList.remove("active");
+      }
+    }
+
+    // Keyboard navigation
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") document.getElementById("lightbox").classList.remove("active");
+      if (e.key === "ArrowLeft") prevFlow();
+      if (e.key === "ArrowRight") nextFlow();
+    });
+
+    // Init
+    renderSimulator();
+  </script>
+</body>
+</html>
