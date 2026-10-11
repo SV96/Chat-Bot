@@ -2,7 +2,7 @@
 
 A mobile-sized, conversational shopping assistant prototype for [FUAARK](https://fuaark.com/) — premium gymwear & sports clothing for men and women.
 
-🚀 **Live Demo**: [https://sv96.github.io/Chat-Bot/](https://sv96.github.io/Chat-Bot/) (or directly at [/ecommerce-chatbot/](https://sv96.github.io/Chat-Bot/ecommerce-chatbot/))
+🚀 **Live Demo**: [https://sv96.github.io/Chat-Bot/ecommerce-chatbot-12/](https://sv96.github.io/Chat-Bot/ecommerce-chatbot-12/) (root redirect: [https://sv96.github.io/Chat-Bot/](https://sv96.github.io/Chat-Bot/))
 
 ---
 
@@ -13,7 +13,7 @@ Chat-Bot/
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml          # GitHub Actions workflow for GitHub Pages deployment
-├── ecommerce-chatbot/          # Main application directory
+├── ecommerce-chatbot-12/       # Main application directory
 │   ├── index.html              # Chatbot web interface
 │   ├── css/
 │   │   └── styles.css          # Theme matched to fuaark.com
@@ -24,7 +24,7 @@ Chat-Bot/
 │   ├── fuaarkScript.txt        # Full user-bot conversation script
 │   ├── whatsapp_screenshots/   # WhatsApp Business UI flow mockups
 │   └── README.md
-├── index.html                  # Root entry redirect to ecommerce-chatbot/
+├── index.html                  # Root entry redirect to ecommerce-chatbot-12/
 └── README.md
 ```
 
